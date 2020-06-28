@@ -1,5 +1,5 @@
 /**
-    XServer
+    XServer iOS SDK
 
     © XScoder 2020
     All Rights reserved
