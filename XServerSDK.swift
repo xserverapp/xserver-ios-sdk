@@ -370,7 +370,7 @@ extension UIViewController {
     // ------------------------------------------------
     // MARK: - XSObject -> CREATE DATA
     // ------------------------------------------------
-    func XSObject(_ parameters:[String], completion: @escaping (_ success:Bool?, _ error:String?) -> Void) {
+    func XSObject(_ parameters:[String], completion: @escaping (_ error:String?, _ object:JSON?) -> Void) {
         let p = parameters.joined()
         let session = URLSession(configuration: .ephemeral)
         let myUrl = URL(string: TABLES_PATH + "m-add-edit.php?")
@@ -380,17 +380,18 @@ extension UIViewController {
         // request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         let task = session.dataTask(with: request) { data, response, error in
             guard let _:Data = data as Data?, let _:URLResponse = response, error == nil else {
-                DispatchQueue.main.async { completion(false, error!.localizedDescription) }
+                DispatchQueue.main.async { completion(error!.localizedDescription, nil) }
                 return
             }
             if let response = String(data: data!, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) {
-                print("XSObject -> RESPONSE: " + response + "\n-------------------")
+                // print("XSObject -> RESPONSE: " + response + "\n-------------------")
                 DispatchQueue.main.async {
-                    if response == "saved" { completion(true, nil)
-                    } else { completion(false, E_201) }
+                    let obj = JSON(parseJSON: response)
+                    if response.contains("ID_id") { completion(nil, obj)
+                    } else { completion(E_201, nil) }
                 }
             // NO response
-            } else { DispatchQueue.main.async { completion(false, XS_ERROR) } }// ./ If response
+            } else { DispatchQueue.main.async { completion(XS_ERROR, nil) } } //./ If response
         }; task.resume()
     }
       
