@@ -398,7 +398,7 @@ extension UIViewController {
       
     
     // ------------------------------------------------
-    // MARK: - XSUploadFile -> UPLOAD AN IMAGE
+    // MARK: - XSUploadFile -> UPLOAD A FILE
     // ------------------------------------------------
     func XSUploadFile(fileData:Data, fileName:String , completion: @escaping (_ fileURL:String?, _ error:String?) -> Void) {
         print("FILENAME: \(fileName)")
