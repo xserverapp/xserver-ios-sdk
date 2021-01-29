@@ -236,7 +236,6 @@ extension UIViewController {
     }
 
    
-
     
     // ------------------------------------------------
     // MARK: - XSGetPointer -> GET POINTER OBJECT
