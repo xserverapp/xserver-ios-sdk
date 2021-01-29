@@ -1,7 +1,7 @@
 /**
     XServer iOS SDK
 
-    © XScoder 2020
+    © XScoder 2021
     All Rights reserved
 
     * IMPORTANT *
