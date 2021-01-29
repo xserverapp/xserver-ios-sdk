@@ -65,16 +65,20 @@ extension UIViewController {
         print("currentUser DEFAULTS: \(String(describing: currentUser))")
              
         if currentUser != nil {
+            let parameters = "tableName=Users"
             let session = URLSession(configuration: .ephemeral)
-            let url = URL(string: TABLES_PATH + "Users.json")
-            let task = session.dataTask(with: url!) { (data, response, error) in
-                guard let dataResponse = data, error == nil else {
-                DispatchQueue.main.async { completion(nil); self.simpleAlert(error!.localizedDescription) }
+            let myUrl = URL(string: TABLES_PATH + "m-query.php?");
+            var request = URLRequest(url:myUrl!)
+            request.httpMethod = "POST"
+            request.httpBody = parameters.data(using: .utf8)
+            let task = session.dataTask(with: request) { (data, response, error)  in
+                if error != nil {
+                    DispatchQueue.main.async { completion(nil) }
                     return
                 }
                      
                 DispatchQueue.main.async {
-                    let users = try! JSON(data: dataResponse)
+                    let users = try! JSON(data: data!)
                     var ok = false
                        
                     // Search for currentUser obj
@@ -238,15 +242,19 @@ extension UIViewController {
     // MARK: - XSGetPointer -> GET POINTER OBJECT
     // ------------------------------------------------
     func XSGetPointer(_ id:String, tableName:String, completion: @escaping (_ userPointer:JSON?) -> Void) {
+        let parameters = "tableName=" + tableName
         let session = URLSession(configuration: .ephemeral)
-        let url = URL(string: TABLES_PATH + tableName + ".json")
-        let task = session.dataTask(with: url!) { (data, response, error) in
-            guard let dataResponse = data, error == nil else {
-                DispatchQueue.main.async { completion(nil); self.simpleAlert(error!.localizedDescription) }
+        let myUrl = URL(string: TABLES_PATH + "m-query.php?");
+        var request = URLRequest(url:myUrl!)
+        request.httpMethod = "POST"
+        request.httpBody = parameters.data(using: .utf8)
+        let task = session.dataTask(with: request) { (data, response, error)  in
+            if error != nil {
+                DispatchQueue.main.async { completion(nil) }
                 return
             }
             DispatchQueue.main.async {
-                let objects = try! JSON(data: dataResponse)
+                let objects = try! JSON(data: data!)
                 var ok = false
                 
                 if objects.count != 0 {
