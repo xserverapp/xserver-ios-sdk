@@ -160,13 +160,14 @@ extension UIViewController {
     // MARK: - XSSignUp -> SIGN UP
     // ------------------------------------------------
     func XSSignUp(username:String, password:String, email:String, signInWith:String, completion: @escaping (_ results:String?, _ error:String?) -> Void) {
-        let parameters = "ST_username=\(username)&ST_password=\(password)&ST_email=\(email)&signInWith=\(signInWith)&ST_iosDeviceToken=\(IOS_DEVICE_TOKEN)&ST_androidDeviceToken=\(ANDROID_DEVICE_TOKEN)"
-          
+        let parameters = ["ST_username": username, "ST_password": password, "ST_email": email, "signInWith": signInWith, "ST_iosDeviceToken": IOS_DEVICE_TOKEN, "ST_androidDeviceToken": ANDROID_DEVICE_TOKEN]
+        
         let session = URLSession(configuration: .ephemeral)
         let myUrl = URL(string: TABLES_PATH + "m-signup.php?")
         var request = URLRequest(url:myUrl!)
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        request.httpBody = parameters.data(using: .utf8)
+        request.httpBody = parameters.percentEncoded()
         let task = session.dataTask(with: request) { data, response, error in
             guard let _:Data = data as Data?, let _:URLResponse = response, error == nil else {
                 DispatchQueue.main.async {
@@ -377,20 +378,19 @@ extension UIViewController {
     // ------------------------------------------------
     // MARK: - XSObject -> CREATE DATA
     // ------------------------------------------------
-    func XSObject(_ parameters:[String], completion: @escaping (_ error:String?, _ object:JSON?) -> Void) {
-        let p = parameters.joined()
+    func XSObject(_ parameters:[String: String], completion: @escaping (_ error:String?, _ object:JSON?) -> Void) {
         let session = URLSession(configuration: .ephemeral)
         let myUrl = URL(string: TABLES_PATH + "m-add-edit.php?")
         var request = URLRequest(url:myUrl!)
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        request.httpBody = p.data(using: .utf8)
-        // request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = parameters.percentEncoded()
         let task = session.dataTask(with: request) { data, response, error in
             guard let _:Data = data as Data?, let _:URLResponse = response, error == nil else {
                 DispatchQueue.main.async { completion(error!.localizedDescription, nil) }
                 return
             }
-            if let response = String(data: data!, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) {
+            if let response = String(data: data!, encoding: .utf8) {
                 // print("XSObject -> RESPONSE: " + response + "\n-------------------")
                 DispatchQueue.main.async {
                     let obj = JSON(parseJSON: response)
