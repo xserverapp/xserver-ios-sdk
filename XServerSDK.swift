@@ -612,7 +612,11 @@ extension UIViewController {
 }// ./ extension: ViewController
 
 
-// EXTENSIONS UTILS FOR XSERVER
+// ------------------------------------------------
+// ------------------------------------------------
+// MARK: - UTILITY EXTENSIONS FOR XServer
+// ------------------------------------------------
+// ------------------------------------------------
 extension Dictionary {
     func percentEncoded() -> Data? {
         return map { key, value in
